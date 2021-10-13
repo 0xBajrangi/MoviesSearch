@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+
     <title>Movies</title>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ephesis&display=swap');
         body{
@@ -28,6 +31,7 @@
             border-radius: 10px;
             overflow: hidden;
             transition: all 0.7s;
+            position: relative;
             
         }
          #movies>div:hover{
@@ -98,6 +102,12 @@
            letter-spacing: 10px;
            margin: 0;
        }
+       i{
+           position: absolute;
+           top: 1%;
+           right: 1%;
+           font-size: 30px;
+       }
         
     </style>
 </head>
@@ -153,10 +163,7 @@ async function getMovie(movie_name){
 function showMovie(movies){
     let parent = document.getElementById("movies");
     parent.innerHTML = null;
-    //sorting for imdb rating > 8.5 should be shown first
-    movies = movies.sort((b,a)=>{
-    return a.vote_average - b.vote_average;
-    });
+
 
     console.log(movies)
 
@@ -177,10 +184,21 @@ function showMovie(movies){
          let year = document.createElement("p");
          year.innerText = "Year-"+movie.release_date.slice(0,4);
 
+
          let imdb = document.createElement("p");
          imdb.innerText = "imdb rating-"+ movie.vote_average;
 
-         div.append(img,title,year,imdb);
+         if(movie.vote_average > 8.5){
+             let recom = document.createElement("p");
+             recom.innerHTML =` <i class="fas fa-thumbs-up"></i> `;
+            
+             div.append(img,title,year,imdb,recom);
+
+         }else{
+
+             div.append(img,title,year,imdb);
+         }
+
          parent.append(div);
 
 
