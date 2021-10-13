@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies</title>
+    <style>
+        body{
+            background-color: #091353;
+        }
+        #movies{
+            display: grid;
+            grid-template-columns: repeat(3,30%);
+            width: 90%;
+            margin:100px auto;
+            justify-content: center;
+            justify-items: center;
+
+        
+
+        }
+        #movies>div{
+            width: 350px;
+            margin-top: 30px;
+            background-color: #9D84B7;
+            border-radius: 10px;
+            overflow: hidden;
+            
+        }
+        #movies >div>img{
+               height: 350px;
+               width: 100%;
+        }
+         #movies >div>p{
+               padding-left: 10px;
+               color: #D5D5D5;
+        }
+
+        #input{
+            width: 90%;
+            margin: auto;
+            text-align: center;  
+            margin-top: 100px;
+            background-color: #9D84B7;
+            height: 100px;
+            border-radius: 10px;
+            line-height: 100px;
+
+
+        }
+        #movie{
+                height: 50px;
+                width: 600px;
+                border: none;
+                background-color: beige;
+                padding-left: 20px;
+                border-radius: 10px;
+                
+        }
+        #input>button{
+             height: 50px;
+                width: 100px;
+                border-radius: 50px;
+                margin-left: 50px;
+        }
+        
+    </style>
+</head>
+<body>
+   <div id="input">
+        <input type="text" id="movie" placeholder="Search Movie">
+    <button onclick="searchMovie()">Search</button>
+   </div>
+       <div id="movies">
+           <!-- all the movies in the form of a grid  -->
+
+       </div>
+    <script>
+
+async function getMovie(movie_name){
+    let res = await fetch(`http://www.omdbapi.com/?s=${movie_name}&apikey=c8cb72f9`);
+    //c8cb72f9
+    let data = await res.json();
+    // console.log(data.Search)
+    showMovie(data.Search)
+
+}
+
+
+function showMovie(movies){
+    let parent = document.getElementById("movies");
+    parent.innerHTML = null;
+
+    movies.forEach(function(movie){
+         let div = document.createElement("div");
+         div.setAttribute("class","movie");
+
+         let img = document.createElement("img");
+         img.src = movie.Poster;
+
+         let title = document.createElement("p");
+         title.innerText ="Title-" +movie.Title;
+
+         let year = document.createElement("p");
+         year.innerText = "Year-"+movie.Year;
+
+         div.append(img,title,year);
+         parent.append(div);
+
+
+
+    });
+    
+}
+
+function searchMovie(){
+    let movie = document.getElementById("movie").value;
+    getMovie(movie);
+}
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
