@@ -26,7 +26,11 @@
             background-color: #9D84B7;
             border-radius: 10px;
             overflow: hidden;
+            transition: all 0.7s;
             
+        }
+         #movies>div:hover{
+                        transform: scale(1.1);
         }
         #movies >div>img{
                height: 350px;
@@ -35,6 +39,8 @@
          #movies >div>p{
                padding-left: 10px;
                color: #D5D5D5;
+               font-size: large;
+               font-family: Verdana, Geneva, Tahoma, sans-serif;
         }
 
         #input{
@@ -60,9 +66,15 @@
         }
         #input>button{
              height: 50px;
-                width: 100px;
+                width: 150px;
                 border-radius: 50px;
                 margin-left: 50px;
+                  transition: 0.5s;
+                font-size: large;
+        }
+        #input>button:hover{
+            transform: scale(1.1);
+
         }
         
     </style>
