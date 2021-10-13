@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movies</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ephesis&display=swap');
         body{
             background-color: #091353;
         }
@@ -62,6 +63,7 @@
                 background-color: beige;
                 padding-left: 20px;
                 border-radius: 10px;
+                font-size: 20px;
                 
         }
         #input>button{
@@ -76,13 +78,37 @@
             transform: scale(1.1);
 
         }
+        #no-result{
+             margin-top: 20px;    
+          
+
+        }
+        #no-result>img{
+           width: 90%;
+           height: 600px;
+           display: block;
+           margin: auto;
+           border-radius: 10px;
+        }
+       h1{
+           text-align: center;
+           color: #B2F9FC;
+           font-size: 70px;
+           font-family: 'Ephesis', cursive;
+           letter-spacing: 10px;
+           margin: 0;
+       }
         
     </style>
 </head>
 <body>
+    <h1>Info.Movies</h1>
    <div id="input">
         <input type="text" id="movie" placeholder="Search Movie">
     <button onclick="searchMovie()">Search</button>
+   </div>
+   <div id="no-result">
+
    </div>
        <div id="movies">
            <!-- all the movies in the form of a grid  -->
@@ -95,7 +121,29 @@ async function getMovie(movie_name){
     //c8cb72f9
     let data = await res.json();
     // console.log(data.Search)
-    showMovie(data.Search)
+    //if no data recieved
+
+    if(data.Search===undefined){
+       let parent = document.getElementById("no-result");
+       parent.innerHTML = null;
+    
+       let img = document.createElement("img");
+       img.src = "https://cdn.dribbble.com/users/2382015/screenshots/6065978/no_result.gif";
+    
+       parent.append(img);
+    
+       let parent1 = document.getElementById("movies");
+       parent1.innerHTML = null;
+    
+    }else{
+
+         let parent = document.getElementById("no-result");
+       parent.innerHTML = null;
+       console.log(data.Search);
+    
+       showMovie(data.Search);
+    
+    }
 
 }
 
@@ -103,6 +151,10 @@ async function getMovie(movie_name){
 function showMovie(movies){
     let parent = document.getElementById("movies");
     parent.innerHTML = null;
+    //sorting for imdb rating > 8.5 should be shown first
+
+    
+
 
     movies.forEach(function(movie){
          let div = document.createElement("div");
@@ -117,7 +169,10 @@ function showMovie(movies){
          let year = document.createElement("p");
          year.innerText = "Year-"+movie.Year;
 
-         div.append(img,title,year);
+         let imdb = document.createElement("p");
+         imdb.innerText = "imdb Id-"+ movie.imdbID;
+
+         div.append(img,title,year,imdb);
          parent.append(div);
 
 
