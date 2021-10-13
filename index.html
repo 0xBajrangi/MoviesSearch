@@ -48,8 +48,8 @@
             width: 90%;
             margin: auto;
             text-align: center;  
-            margin-top: 100px;
-            background-color: #9D84B7;
+            /* margin-top: 100px; */
+            background-color: #8c73a795;
             height: 100px;
             border-radius: 10px;
             line-height: 100px;
@@ -115,15 +115,17 @@
 
        </div>
     <script>
+        
 
 async function getMovie(movie_name){
-    let res = await fetch(`http://www.omdbapi.com/?s=${movie_name}&apikey=c8cb72f9`);
+    let res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=d96691ff21105442b23e5deb93e504f5&query=${movie_name}`);
     //c8cb72f9
     let data = await res.json();
     // console.log(data.Search)
     //if no data recieved
+    console.log(data)
 
-    if(data.Search===undefined){
+    if(data.results===undefined){
        let parent = document.getElementById("no-result");
        parent.innerHTML = null;
     
@@ -139,9 +141,9 @@ async function getMovie(movie_name){
 
          let parent = document.getElementById("no-result");
        parent.innerHTML = null;
-       console.log(data.Search);
+       console.log(data.results);
     
-       showMovie(data.Search);
+       showMovie(data.results);
     
     }
 
@@ -152,6 +154,11 @@ function showMovie(movies){
     let parent = document.getElementById("movies");
     parent.innerHTML = null;
     //sorting for imdb rating > 8.5 should be shown first
+    movies = movies.sort((b,a)=>{
+    return a.vote_average - b.vote_average;
+    });
+
+    console.log(movies)
 
     
 
@@ -161,16 +168,17 @@ function showMovie(movies){
          div.setAttribute("class","movie");
 
          let img = document.createElement("img");
-         img.src = movie.Poster;
+         img.src = "https://image.tmdb.org/t/p/w500"+movie.poster_path;
+        //  img.alt ="no image available";
 
          let title = document.createElement("p");
-         title.innerText ="Title-" +movie.Title;
+         title.innerText ="Title-" +movie.title;
 
          let year = document.createElement("p");
-         year.innerText = "Year-"+movie.Year;
+         year.innerText = "Year-"+movie.release_date.slice(0,4);
 
          let imdb = document.createElement("p");
-         imdb.innerText = "imdb Id-"+ movie.imdbID;
+         imdb.innerText = "imdb rating-"+ movie.vote_average;
 
          div.append(img,title,year,imdb);
          parent.append(div);
