@@ -10,6 +10,8 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ephesis&display=swap');
+
+
         body{
             background-color: #091353;
         }
@@ -165,7 +167,7 @@
             border-radius: 10px;
             margin-top: 50px;
             display: grid;
-            grid-template-columns:  30% 40%;
+            grid-template-columns:  30% 50%;
             grid-gap: 20px;
             overflow:hidden;
        }
@@ -176,13 +178,19 @@
        #detail>div>p{
            font-size: 25px;
        }
+       #popular{
+            text-align: center;
+           color: #B2F9FC;
+           font-family: 'Ephesis', cursive;
+           font-size: 40px;
+       }
         
     </style>
 </head>
 <body>
     <h1 onclick="returnToHome()">Info.Movies</h1>
    <div id="input">
-        <input type="text" id="movie" placeholder="Search Movie" oninput="searchMovie()">
+        <input type="text" id="movie" placeholder="Search Movie" oninput="debounce(searchMovie,1000)">
         <div id="search" ></div>
     
    </div>
@@ -192,8 +200,9 @@
    <div id="detail">
 
    </div>
+   <div id="popular">Popular Movies</div>
    <div id="category">
-       but
+        
    </div>
        <div id="movies">
            <!-- all the movies in the form of a grid  -->
@@ -296,19 +305,40 @@ function showMovie(movies){
     });
     
 }
+let timeID;
+//applying debouncing to search funciton
+function debounce(func,delay){
 
+    if(timeID){
+        clearTimeout(timeID);
+    }
+
+
+
+    timeID = setTimeout(function(){
+        func();
+
+    },delay);
+
+}
+//input to this function form search
 function searchMovie(){
+
+
     let movie = document.getElementById("movie").value;
     console.log(movie)
-    if(movie ==""){
+    if(movie =="" || movie.length<3){
             let parent = document.getElementById("search");
        parent.innerHTML = null;
 return ;
     }else{
-
         getMovie(movie);
     }
+
+
 }
+
+
 
 function showSearch(movies){
     let parent = document.getElementById("search");
@@ -373,10 +403,6 @@ div2.append(title,date,overview);
 
 parent.append(div1,div2)
           window.location.href="#detail";
-
-
-
-
 
 }
 
