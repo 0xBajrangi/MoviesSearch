@@ -15,17 +15,18 @@
         }
         #movies{
             display: grid;
-            grid-template-columns: repeat(3,30%);
+            grid-template-columns: repeat(4,23%);
             width: 90%;
             margin:100px auto;
             justify-content: center;
             justify-items: center;
 
+
         
 
         }
         #movies>div{
-            width: 350px;
+            width: 250px;
             margin-top: 30px;
             background-color: #9D84B7;
             border-radius: 10px;
@@ -38,7 +39,7 @@
                         transform: scale(1.1);
         }
         #movies >div>img{
-               height: 350px;
+               height: 250px;
                width: 100%;
         }
          #movies >div>p{
@@ -46,6 +47,8 @@
                color: #D5D5D5;
                font-size: large;
                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                  padding-right: 10px;
+                  margin: 0 ;
         }
 
         #input{
@@ -57,6 +60,7 @@
             height: 100px;
             border-radius: 10px;
             line-height: 100px;
+            position: relative;
 
 
         }
@@ -70,7 +74,7 @@
                 font-size: 20px;
                 
         }
-        #input>button{
+        /* #input>button{
              height: 50px;
                 width: 150px;
                 border-radius: 50px;
@@ -81,7 +85,7 @@
         #input>button:hover{
             transform: scale(1.1);
 
-        }
+        } */
         #no-result{
              margin-top: 20px;    
           
@@ -106,19 +110,90 @@
            position: absolute;
            top: 1%;
            right: 1%;
-           font-size: 30px;
+           font-size: 50px;
+           color: white;
+       }
+       #search{
+           margin:  0 auto;
+           width: 400px;
+           position: absolute;
+           background-color: #D5D5D5;
+         left: 30%;
+         z-index: 1;
+         max-height: 500px;
+         overflow-y: scroll;
+
+          display: flex;
+           flex-direction: column;
+           border: none;
+           box-shadow: 0 10px 10px black;
+           border-radius: 10px;
+         
+       }
+       #search>div>img{
+           height: 125px;
+           
+       }
+    
+       #search>div{
+        margin: 10px;   
+        display: flex; 
+        gap: 20px;
+       }
+       #search>div>p{
+           font-size: 24px;
+           font-family: Verdana, Geneva, Tahoma, sans-serif;
+       }
+       @media only screen and (max-width:1200px) {
+
+         #movies{
+            grid-template-columns: repeat(3,30%);
+        }
+           
+       }
+       @media only screen and (max-width:900px) {
+
+         #movies{
+            grid-template-columns: repeat(2,40%);
+        }
+           
+       }
+       #detail{
+            width: 90%;
+            margin: auto;
+            background-color: #8c73a795;
+            border-radius: 10px;
+            margin-top: 50px;
+            display: grid;
+            grid-template-columns:  30% 40%;
+            grid-gap: 20px;
+            overflow:hidden;
+       }
+       #detail>div>img{
+           height: 400px;
+           width: 100%;
+       }
+       #detail>div>p{
+           font-size: 25px;
        }
         
     </style>
 </head>
 <body>
-    <h1>Info.Movies</h1>
+    <h1 onclick="returnToHome()">Info.Movies</h1>
    <div id="input">
-        <input type="text" id="movie" placeholder="Search Movie">
-    <button onclick="searchMovie()">Search</button>
+        <input type="text" id="movie" placeholder="Search Movie" oninput="searchMovie()">
+        <div id="search" ></div>
+    
    </div>
-   <div id="no-result">
+   <!-- <div id="no-result"> -->
 
+   </div>
+   <div id="detail">
+
+   </div>
+   <div id="category">
+       but
    </div>
        <div id="movies">
            <!-- all the movies in the form of a grid  -->
@@ -127,47 +202,52 @@
     <script>
         
 
+
+
+
+        //get movie on search 
 async function getMovie(movie_name){
     let res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=d96691ff21105442b23e5deb93e504f5&query=${movie_name}`);
     //c8cb72f9
     let data = await res.json();
     // console.log(data.Search)
     //if no data recieved
+    // console.log(data)
     console.log(data)
 
     if(data.results===undefined){
-       let parent = document.getElementById("no-result");
+       let parent = document.getElementById("search");
        parent.innerHTML = null;
-    
-       let img = document.createElement("img");
-       img.src = "https://cdn.dribbble.com/users/2382015/screenshots/6065978/no_result.gif";
-    
-       parent.append(img);
-    
-       let parent1 = document.getElementById("movies");
-       parent1.innerHTML = null;
-    
+       parent.innerHTML = `<h1> Not Found</h1>`;
+  
     }else{
 
-         let parent = document.getElementById("no-result");
-       parent.innerHTML = null;
-       console.log(data.results);
+     let parent = document.getElementById("search");
+     parent.innerHTML = null;
+    console.log(data.results);
     
-       showMovie(data.results);
+       showSearch(data.results);
     
     }
 
 }
 
+async function showPopular(){
+    let res = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=d96691ff21105442b23e5deb93e504f5&sort_by=popularity.desc`);
+    
+    let data = await res.json();
+
+    showMovie(data.results)
+
+}
+showPopular();
+
+
 
 function showMovie(movies){
     let parent = document.getElementById("movies");
     parent.innerHTML = null;
-
-
-    console.log(movies)
-
-    
+   
 
 
     movies.forEach(function(movie){
@@ -198,6 +278,16 @@ function showMovie(movies){
 
              div.append(img,title,year,imdb);
          }
+          //add event listener 
+         div.addEventListener("click",function(){
+          console.log(movie);
+          showDetail(movie);
+          //colapse the search div
+
+              let parent = document.getElementById("search");
+       parent.innerHTML = null;
+
+         })
 
          parent.append(div);
 
@@ -209,10 +299,86 @@ function showMovie(movies){
 
 function searchMovie(){
     let movie = document.getElementById("movie").value;
-    getMovie(movie);
+    console.log(movie)
+    if(movie ==""){
+            let parent = document.getElementById("search");
+       parent.innerHTML = null;
+return ;
+    }else{
+
+        getMovie(movie);
+    }
+}
+
+function showSearch(movies){
+    let parent = document.getElementById("search");
+    parent.innerHTML = null;
+
+    movies.forEach(function(movie){
+ let div = document.createElement("div");
+         div.setAttribute("class","searchMovie");
+
+         let img = document.createElement("img");
+         img.src = "https://image.tmdb.org/t/p/w500"+movie.poster_path;
+
+         let title = document.createElement("p");
+         title.innerText =movie.title;
+             
+
+         div.append(img,title);
+         parent.append(div);
+
+         //add event listener 
+         div.addEventListener("click",function(){
+          console.log(movie);
+          showDetail(movie);
+          //colapse the search div
+
+              let parent = document.getElementById("search");
+       parent.innerHTML = null;
+
+         })
+        
+    });
+
 }
 
 
+//show detail on individual movie
+
+function showDetail(movie){
+let parent = document.getElementById("detail");
+parent.innerHTML = null;
+parent.style.backgroundImage = "https://image.tmdb.org/t/p/w500"+movie.backdrop_path;
+
+let div1 = document.createElement("div");
+
+let img = document.createElement("img");
+img.src = "https://image.tmdb.org/t/p/w500"+movie.poster_path;
+ 
+div1.append(img);
+
+let div2 = document.createElement("div");
+
+let title = document.createElement("h2");
+title.innerText = movie.title;
+
+let date = document.createElement("p");
+date.innerHTML = movie.release_date;
+
+let overview = document.createElement("p");
+overview.innerText = movie.overview;
+
+div2.append(title,date,overview);
+
+parent.append(div1,div2)
+          window.location.href="#detail";
+
+
+
+
+
+}
 
 
 
