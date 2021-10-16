@@ -63,6 +63,9 @@
             border-radius: 10px;
             line-height: 100px;
             position: relative;
+            display: flex;
+            align-items: center;
+    justify-content: center;
 
 
         }
@@ -108,23 +111,23 @@
            letter-spacing: 10px;
            margin: 0;
        }
-       i{
+       /* i{
            position: absolute;
            top: 1%;
            right: 1%;
            font-size: 50px;
            color: white;
-       }
+       } */
        #search{
            margin:  0 auto;
            width: 400px;
            position: absolute;
            background-color: #D5D5D5;
-         left: 30%;
+         left: 20%;
          z-index: 1;
          max-height: 500px;
          overflow-y: scroll;
-
+          top: 100px;
           display: flex;
            flex-direction: column;
            border: none;
@@ -184,6 +187,94 @@
            font-family: 'Ephesis', cursive;
            font-size: 40px;
        }
+
+
+       /*  */
+            #signin{
+        border: 1.5px solid black;
+        border-radius: 10px;
+        background-color: #B2F9FC;
+        color: black;
+        height: 50px;
+        width: 150px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        margin-top: 5px;
+        margin-left: 100px;
+        line-height: 40px;
+        font-weight: bolder;
+        translate:all 1s;
+
+      }
+       #signin:hover{
+           transform: scale(1.1);
+       }
+      .fa-user-circle{
+        line-height: 10px;
+        font-size: 20px;
+        margin: 4px 10px 0 20px;
+      }
+
+      .login,.signup{
+       
+        height: 600px;
+        width: 500px;
+        position: absolute;
+            background-color: #9D84B7;
+        border-radius: 20px;
+        z-index: 2;
+        top: 15%;
+        left: 35%;
+        box-shadow: 10px 10px 10px black;
+        display: none;
+        flex-direction: column;
+        
+        
+      }
+      .login input[type="submit"],.signup input[type="submit"]{
+           border: 1.5px solid black;
+        border-radius: 10px;
+        background-color: #B2F9FC;
+        color: black;
+        height: 50px;
+        width: 150px;
+      }
+      .login h1{
+        text-align: center;
+        margin: 10px;
+        margin-top: 150px;
+
+      }
+      .login input{
+        margin: 10px auto;
+        height: 40px;
+        width: 300px;
+        padding-left: 10px;
+        font-size: 20px;
+        
+      }
+       .login h3{
+         text-align: center;
+         cursor: pointer;
+         margin-top: 10px;
+       }
+        .signup input{
+        margin: 10px auto;
+        height: 40px;
+        width: 300px;
+        padding-left: 10px;
+        font-size: 20px;
+        
+      }
+       .signup h3{
+         text-align: center;
+         cursor: pointer;
+         margin-top: 10px;
+       }
+       .active{
+         display: flex;
+       }
         
     </style>
 </head>
@@ -191,9 +282,30 @@
     <h1 onclick="returnToHome()">Info.Movies</h1>
    <div id="input">
         <input type="text" id="movie" placeholder="Search Movie" oninput="debounce(searchMovie,1000)">
+        <div id="signin" onclick="login_page()"><i class="far fa-user-circle"></i><p>SIGN IN</p></div>
+
         <div id="search" ></div>
+        <!-- login -->
+    </div>
+        <div class="login"  >
+        <h1>login</h1>
+        <input type="text" id="user"placeholder="username">
+        <input type="password" id="pass" placeholder="password">
+        <input type="submit" value="login" onclick="login()">
+        <h3 onclick="signup_page()">signup</h3>
+      </div>
+<!-- signup -->
+      <div class="signup">
+        <h1>Signup</h1>
+          <input type="text" id="name" placeholder="name">
+    <input type="email" id="email" placeholder="email">
+    <input type="password" id="password" placeholder="Pass">
+    <input type="text" id="userName" placeholder="user Name">
+    <input type="text" id="mobile" placeholder="Mob No">
+    <input type="text" id="description" placeholder="Desc">
+     <input type="submit" value="sign-up" onclick="signup()">
+      </div>
     
-   </div>
    <!-- <div id="no-result"> -->
 
    </div>
@@ -405,6 +517,138 @@ parent.append(div1,div2)
           window.location.href="#detail";
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //login
+
+  function login_page(){
+  
+  let login = document.querySelector(".login");
+  login.classList.add("active");
+  document.querySelector(".signup").classList.remove("active");
+
+
+
+  }
+
+  function signup_page(){
+     document.querySelector(".login").classList.remove("active");
+
+     let signup =document.querySelector(".signup");
+
+  signup.classList.add("active");
+
+  }
+
+  //function signup
+  function signup(){
+    let new_user = {
+      name :document.getElementById("name").value,
+        email : document.getElementById("email").value,
+        password:document.getElementById("password").value,
+        username :document.getElementById("userName").value,
+        mobile : document.getElementById("mobile").value,
+        description : document.getElementById("description").value
+
+    }
+
+    new_user = JSON.stringify(new_user);
+
+    fetch("https://masai-api-mocker.herokuapp.com/auth/register",{
+      method:"POST",
+      body:new_user,
+       headers:{
+
+            'Content-Type':'application/json',
+        },
+
+    })
+    .then((res)=>{
+      return res.json();
+    }).then((res)=>{
+      if(res.message === "Registration Success") 
+      { alert(res.message)
+        login_page();
+      }
+      else{
+        alert(res.message)
+      }
+      
+    }).catch((err)=>{
+      console.log(err)
+    })
+
+         document.getElementById("name").value =null;
+         document.getElementById("email").value =null;
+         document.getElementById("password").value =null;
+         document.getElementById("userName").value =null;
+         document.getElementById("mobile").value =null;
+         document.getElementById("description").value=null;
+   
+  }
+
+
+  function login(){
+      let user = {
+        password:document.getElementById("pass").value,
+        username :document.getElementById("user").value,
+
+    }
+
+    let use = JSON.stringify(user);
+
+    fetch("https://masai-api-mocker.herokuapp.com/auth/login",{
+      method:'POST',
+      body:use,
+      headers:{
+        'Content-Type':'application/json'
+      }
+    })
+    .then((res)=>{
+      return res.json();
+
+    }).then((res)=>{
+      console.log(res);
+      if(!res.error){
+          usergetdetail(user.username,res.token)
+
+      }else{
+        alert(res.message)
+      }
+    })
+
+  }
+  function usergetdetail(username,token){
+
+    document.querySelector(".login").classList.remove("active");
+
+    fetch(`https://masai-api-mocker.herokuapp.com/user/${username}`,{
+    
+        headers:{
+            'Content-Type':'application/json',
+            Authorization:`Bearer ${token}`,
+
+        }
+    })
+    .then((res)=>{
+        return res.json();
+    }).then((res)=>{
+        document.querySelector("#signin>p").innerText = res.username;
+        document.querySelector("#signin").style.border = "none";
+    });
+
+  }
 
 
 
